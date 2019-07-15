@@ -1,0 +1,38 @@
+.page-content {
+  padding: 20px;
+  min-height: 600px;
+}
+
+.title {
+  float: left;
+}
+
+.actions {
+  float: right;
+}
+
+.content {
+  clear: both;
+  padding-top: 16px;
+}
+
+.empty-message {
+  padding: 120px 0;
+  text-align: center;
+}
+
+.empty-message p {
+  margin: 12px 0 16px;
+}
+
+.connection-avatar {
+  border-radius: 4px;
+  height: 24px;
+  vertical-align: middle;
+  width: 24px;
+}
+
+.error-message {
+  background: #d04437;
+  color: #fff;
+}

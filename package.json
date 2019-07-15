@@ -3,44 +3,57 @@
   "private": true,
   "repository": "https://github.com/integrations/jira.git",
   "scripts": {
-    "dev": "nodemon --exec \"npm start\"",
-    "start": "probot run ./lib/configure-robot",
     "ci": "npm test && npm run lint",
+    "dev": "nodemon --exec \"npm start\"",
     "lint": "standard --fix",
-    "test": "jest",
-    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+    "start": "probot run --webhook-path=/github/events ./lib/configure-robot",
+    "test": "jest && standard",
+    "test:watch": "jest --watch --notify --notifyMode=change",
+    "worker": "node bin/worker"
   },
   "dependencies": {
+    "@atlaskit/css-reset": "^2.0.5",
+    "@atlaskit/reduced-ui-pack": "^8.11.1",
     "atlassian-jwt": "^0.1.5",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
+    "bull": "^3.4.7",
+    "cookie-session": "^2.0.0-beta.3",
+    "csurf": "^1.9.0",
+    "date-fns": "^1.29.0",
     "express": "^4.16.3",
+    "express-sslify": "^1.2.0",
+    "helmet": "^3.13.0",
+    "newrelic": "^4.8.1",
     "pg": "^7.4.3",
-    "probot": "^6.0.0",
+    "primer": "^10.6.0",
+    "probot": "^7.1.2",
     "probot-config": "^0.1.0",
+    "request": "^2.88.0",
     "sequelize": "^4.37.10",
     "sequelize-cli": "^4.0.0",
     "sequelize-encrypted": "^1.0.0"
   },
   "devDependencies": {
+    "@types/bull": "^3.3.19",
     "jest": "^22.4.3",
+    "keygrip": "^1.0.2",
     "nock": "^9.3.2",
     "nodemon": "^1.17.2",
     "smee-client": "^1.0.1",
     "standard": "^11.0.1",
+    "supertest": "^3.1.0",
     "testdouble": "^3.8.1",
     "testdouble-jest": "^2.0.0",
-    "testdouble-nock": "^0.1.0"
+    "testdouble-nock": "^0.2.0"
   },
   "engines": {
     "node": ">= 8.3.0"
   },
   "jest": {
-    "roots": [
-      "test"
-    ],
     "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "./test/setup"
+    "setupTestFrameworkScriptFile": "./test/setup",
+    "globalTeardown": "./test/teardown"
   },
   "standard": {
     "env": [

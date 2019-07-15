@@ -1,13 +1,12 @@
-const { createRobot } = require('probot')
+const { Application } = require('probot')
 const { findPrivateKey } = require('probot/lib/private-key')
 const cacheManager = require('cache-manager')
-const createGitHubApp = require('probot/lib/github-app')
+const { createApp: createGitHubApp } = require('probot/lib/github-app')
 
 beforeEach(() => {
   const models = td.replace('../../lib/models', {
-    Installation: {
-      getForHost: td.function()
-    }
+    Installation: td.object(['getForHost']),
+    Subscription: td.object(['getAllForInstallation', 'install', 'getSingleInstallation'])
   })
 
   td.when(models.Installation.getForHost(process.env.ATLASSIAN_URL))
@@ -15,6 +14,13 @@ beforeEach(() => {
       jiraHost: process.env.ATLASSIAN_URL,
       sharedSecret: process.env.ATLASSIAN_SECRET
     })
+
+  td.when(models.Subscription.getAllForInstallation('test-installation-id'))
+    .thenReturn([
+      {
+        jiraHost: process.env.ATLASSIAN_URL
+      }
+    ])
 
   nock('https://api.github.com')
     .post(/\/installations\/[\d\w-]+\/access_tokens/)
@@ -29,7 +35,7 @@ beforeEach(() => {
 
   const configureRobot = require('../../lib/configure-robot')
 
-  global.app = configureRobot(createRobot({
+  global.app = configureRobot(new Application({
     app: createGitHubApp({
       id: 12257,
       cert: findPrivateKey()
@@ -39,4 +45,8 @@ beforeEach(() => {
       ttl: 60 * 60 // 1 hour
     })
   }))
+})
+
+afterEach(() => {
+  nock.cleanAll()
 })
